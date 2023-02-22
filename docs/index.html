@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@1.*/css/pico.min.css">
+
+    <title>Securfile Encrypter</title>
+</head>
+
+<body>
+    <main class="container">
+        <hgroup>
+            <h1>Welcome to Securfile Encrypter!</h1>
+            <h6>Encrypt your file and decrypt in your application in ease!</h6>
+        </hgroup>
+        <form onsubmit="encrypt(event)">
+            <div class="grid">
+                <input type="text" id="cipher" placeholder="Cipher Key" />
+                <small>Any 16, 32, 64, 128, 256 string would works</small>
+
+                <input type="text" id="additional" placeholder="Additional Key (Optional)" />
+            </div>
+            <input type="file" id="file" name="file" onchange="readFile(event)" />
+            <small>We'll never store your file and keys.</small>
+
+            <button type="submit" id="submit">Encrypt</button>
+            <small id="error" style="color: red"></small>
+        </form>
+    </main>
+</body>
+
+<script>
+    var fileData = ""
+    var fileName = ""
+
+    function arrayBufferToBase64(buffer) {
+        var binary = '';
+        var bytes = new Uint8Array(buffer);
+        var len = bytes.byteLength;
+        for (var i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return window.btoa(binary);
+    }
+
+    function stringToArrayBuffer(str) {
+        var array = new Uint8Array(str.length);
+        for (var i = 0; i < str.length; i++) {
+            array[i] = str.charCodeAt(i);
+        }
+        return array.buffer
+    }
+
+    function readFile(event) {
+        var input = event.target;
+
+        var reader = new FileReader();
+        reader.onload = function () {
+            fileData = reader.result;
+            fileName = input.files[0].name
+        };
+        reader.readAsText(input.files[0]);
+    }
+
+    function required(field) {
+        document.getElementById(field).ariaInvalid = "true"
+    }
+
+    function clearInvalid() {
+        document.getElementById("file").ariaInvalid = ""
+        document.getElementById("cipher").ariaInvalid = ""
+        document.getElementById("error").innerText = ""
+    }
+
+    function randomAlphaNumeric(length) {
+        let result = '';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const charactersLength = characters.length;
+        let counter = 0;
+        while (counter < length) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            counter += 1;
+        }
+        return result;
+    }
+
+    async function encrypt(event) {
+        event.preventDefault();
+        document.getElementById("submit").ariaBusy = "true"
+
+        try {
+            clearInvalid()
+
+            var cipherKey = event.target[0].value;
+            if (cipherKey == "") {
+                return required("cipher")
+            }
+
+            if (fileData == "") {
+                return required("file")
+            }
+
+            try {
+                var additionalKey = event.target[1].value;
+                var importedKey = await window.crypto.subtle.importKey("raw", stringToArrayBuffer(cipherKey), { name: "AES-GCM" }, false, ["encrypt"])
+                var nonce = randomAlphaNumeric(12)
+                var encryptObject = {
+                    name: "AES-GCM",
+                    iv: stringToArrayBuffer(nonce),
+                    additionalData: stringToArrayBuffer(additionalKey),
+                }
+
+                var val = await window.crypto.subtle.encrypt(encryptObject, importedKey, stringToArrayBuffer(fileData))
+                var encryptedValue = arrayBufferToBase64(val);
+                encryptedData = nonce + "," + encryptedValue
+
+                // download file
+                var element = document.createElement('a');
+                element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(encryptedData));
+                element.setAttribute('download', fileName);
+                element.style.display = 'none';
+                document.body.appendChild(element);
+                element.click();
+                document.body.removeChild(element);
+
+            } catch (err) {
+                console.log(err)
+                document.getElementById("error").innerText = err
+            }
+        } finally {
+            document.getElementById("submit").ariaBusy = ""
+        }
+
+    }
+</script>
+
+</html>
