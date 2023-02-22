@@ -19,9 +19,10 @@
         </hgroup>
         <form onsubmit="encrypt(event)">
             <div class="grid">
-                <input type="text" id="cipher" placeholder="Cipher Key" />
-                <small>Any 16, 32, 64, 128, 256 string would works</small>
-
+                <div>
+                    <input type="text" id="cipher" placeholder="Cipher Key" />
+                    <small>Any 16, 32, 64, 128, 256 string would works</small>
+                </div>
                 <input type="text" id="additional" placeholder="Additional Key (Optional)" />
             </div>
             <input type="file" id="file" name="file" onchange="readFile(event)" />
