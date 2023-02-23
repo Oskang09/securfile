@@ -1,3 +1,3 @@
-module github.com/RevenueMonster/securfile
+module github.com/Oskang09/securfile
 
 go 1.17
