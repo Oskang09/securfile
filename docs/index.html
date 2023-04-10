@@ -13,15 +13,21 @@
 
 <body>
     <main class="container">
-        <hgroup>
-            <h1>Welcome to Securfile Encrypter!</h1>
-            <h6>Encrypt your file and decrypt in your application in ease!</h6>
-        </hgroup>
+        <nav>
+            <hgroup>
+                <h1>Welcome to Securfile Encrypter!</h1>
+                <h6>Encrypt your file and decrypt in your application in ease!</h6>
+            </hgroup>
+            <ul>
+                <li><a href="https://github.com/Oskang09/securfile">Github</a></li>
+            </ul>
+        </nav>
+
         <form onsubmit="encrypt(event)">
             <div class="grid">
                 <div>
                     <input type="text" id="cipher" placeholder="Cipher Key" />
-                    <small>Any 16, 32, 64, 128, 256 string would works</small>
+                    <small>Any 16, 24, 32 string would works</small>
                 </div>
                 <input type="text" id="additional" placeholder="Additional Key (Optional)" />
             </div>
