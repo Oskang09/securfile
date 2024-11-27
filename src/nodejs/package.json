@@ -1,0 +1,13 @@
+{
+    "name": "securfile",
+    "version": "0.0.1",
+    "description": "",
+    "main": "index.js",
+    "homepage": "https://github.com/Oskang09/securfile#readme",
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/Oskang09/securfile"
+    },
+    "author": "Oskang09",
+    "license": "ISC"
+  }

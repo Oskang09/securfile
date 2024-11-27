@@ -11,7 +11,6 @@ import (
 
 var (
 	ErrInvalidEncryptedValue = errors.New("securfile: invalid encrypted value")
-	ErrInvalidNonceValue     = errors.New("securfile: invalid nonce value")
 )
 
 func decrypt(cipherValue string, nonceKey string, cipherKey string, authKey string) (string, error) {
